@@ -4,7 +4,7 @@ import { Layout } from './components/Layout';
 import { FileCard } from './components/FileCard';
 import { UploadModal } from './components/UploadModal';
 
-const API_URL = 'https://unchiming-sorely-leatha.ngrok-free.dev';
+const API_URL = 'https://unchiming-sorely-leatha.ngrok-free.dev/api';
 
 const App: React.FC = () => {
   const [auth, setAuth] = useState<AuthState>({ isAuthenticated: false, user: null, token: null });

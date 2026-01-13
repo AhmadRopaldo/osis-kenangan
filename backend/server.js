@@ -143,4 +143,7 @@ app.put('/api/files/:id', upload.single('file'), (req, res) => {
         });
     }
 });
-app.listen(5000, () => console.log("Server Berjalan di Port 5000"));
+const PORT = 5000;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server aktif di port ${PORT}`);
+});
