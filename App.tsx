@@ -24,20 +24,17 @@ const App: React.FC = () => {
 
   // 1. Fetch data dari Database
   const fetchFiles = async () => {
-    try {
-      const res = await fetch(`${API_URL}/files`);
-      if (res.ok) {
-        const data = await res.json();
-        setFiles(Array.isArray(data) ? data : []);
-      }
-    } catch (e) { 
-      console.error("Backend mati atau tidak terjangkau", e); 
+  try {
+    const res = await fetch(`${API_URL}/files`);
+    if (res.ok) {
+      const data = await res.json();
+      // Pastikan data yang masuk memiliki properti fileLabel dan fileName
+      setFiles(data);
     }
-  };
-
-  useEffect(() => { 
-    if (auth.isAuthenticated) fetchFiles(); 
-  }, [auth.isAuthenticated]);
+  } catch (error) {
+    console.error("Gagal mengambil data:", error);
+  }
+};
 
   // 2. Handler Register
   const handleRegister = async (e: React.FormEvent) => {
@@ -165,6 +162,8 @@ const filteredFiles = useMemo(() => {
       alert("Gagal mengupload file");
     }
   };
+
+  
 
   // UI Login & Register
   if (!auth.isAuthenticated) {
