@@ -10,6 +10,7 @@ const app = express();
 // --- PENGAMAN UTAMA ---
 app.use(cors()); // Mencegah "Gagal terhubung ke server"
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // --- AKSES FOLDER UPLOADS ---
 const uploadDir = path.join(__dirname, 'uploads');
@@ -42,11 +43,15 @@ const upload = multer({ storage });
 
 // GET: Mengambil data dengan nama kolom yang benar
 app.get('/api/files', (req, res) => {
+    // Ambil host dari request secara dinamis (ini akan otomatis menjadi link Ngrok Anda)
+    const host = req.get('host'); 
+    const protocol = req.protocol; 
+
     const sql = `
         SELECT 
             id, file_name as fileName, file_label as fileLabel, file_type as fileType, 
             file_size as fileSize, upload_date as uploadDate,
-            CONCAT('http://localhost:5000/uploads/', file_name) as filePath
+            CONCAT('${protocol}://${host}/uploads/', file_name) as filePath
         FROM files ORDER BY upload_date DESC`;
     db.query(sql, (err, results) => {
         if (err) return res.status(500).json([]);
