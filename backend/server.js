@@ -8,7 +8,11 @@ const fs = require('fs');
 const app = express();
 
 // --- PENGAMAN UTAMA ---
-app.use(cors()); // Mencegah "Gagal terhubung ke server"
+app.use(cors({
+    origin: '*', // Mengizinkan akses dari Vercel
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'ngrok-skip-browser-warning'] // Izinkan header custom kita
+})); // Mencegah "Gagal terhubung ke server"
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -26,14 +26,19 @@ const App: React.FC = () => {
 const fetchFiles = async () => {
   try {
     const res = await fetch(`${API_URL}/files`, {
-      // INI ADALAH HEADERNYA
+      method: 'GET', // Opsional tapi baik untuk memperjelas
       headers: {
-        "ngrok-skip-browser-warning": "69420",
+        "ngrok-skip-browser-warning": "any-value", // Nilai bisa apa saja
       },
     });
-    if (res.ok) {
+
+    // Cek apakah responnya benar-benar JSON
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
       const data = await res.json();
       setFiles(data);
+    } else {
+      console.error("Server tidak mengirim JSON, tapi:", await res.text());
     }
   } catch (error) {
     console.error("Gagal mengambil data:", error);
