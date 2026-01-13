@@ -23,12 +23,16 @@ const App: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState(false);
 
   // 1. Fetch data dari Database
-  const fetchFiles = async () => {
+const fetchFiles = async () => {
   try {
-    const res = await fetch(`${API_URL}/files`);
+    const res = await fetch(`${API_URL}/files`, {
+      // INI ADALAH HEADERNYA
+      headers: {
+        "ngrok-skip-browser-warning": "69420",
+      },
+    });
     if (res.ok) {
       const data = await res.json();
-      // Pastikan data yang masuk memiliki properti fileLabel dan fileName
       setFiles(data);
     }
   } catch (error) {
@@ -43,7 +47,7 @@ const App: React.FC = () => {
     try {
       const res = await fetch(`${API_URL}/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', "ngrok-skip-browser-warning": "69420", },
         body: JSON.stringify(registerForm)
       });
       const data = await res.json();
@@ -65,7 +69,7 @@ const App: React.FC = () => {
     try {
       const res = await fetch(`${API_URL}/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', "ngrok-skip-browser-warning": "69420", },
         body: JSON.stringify(loginForm)
       });
       const data = await res.json();
@@ -145,24 +149,38 @@ const filteredFiles = useMemo(() => {
   });
 }, [files, searchTerm, filter]);
 
-  // 7. Handler Upload Baru
+// 7. Handler Upload Baru
   const handleUpload = async (name: string, file: File) => {
     const fd = new FormData();
     fd.append('file', file);
     fd.append('userId', auth.user?.id?.toString() || '');
     fd.append('fileType', file.type.startsWith('image/') ? 'image' : 'video');
+    // Tambahkan juga parameter name jika backend Anda membutuhkannya untuk fileLabel
+    fd.append('fileName', name); 
 
     try {
-      const res = await fetch(`${API_URL}/upload`, { method: 'POST', body: fd });
+      const res = await fetch(`${API_URL}/upload`, { 
+        method: 'POST', 
+        body: fd,
+        // TAMBAHKAN HEADER DI SINI
+        headers: {
+          "ngrok-skip-browser-warning": "69420",
+        }
+      });
+
       if (res.ok) {
         setIsUploadModalOpen(false);
         fetchFiles();
+        // Optional: beri notifikasi sukses
+        alert("Kenangan berhasil diunggah!");
+      } else {
+        const errorData = await res.json();
+        alert(errorData.message || "Gagal mengupload file");
       }
     } catch (e) {
-      alert("Gagal mengupload file");
+      alert("Gagal terhubung ke server saat upload");
     }
   };
-
   
 
   // UI Login & Register
